@@ -1,14 +1,16 @@
 import requests
 import json
-import sys
 import time
 from faker import Faker
-
 import address
+
+RequestTimeoutLength = 1  # Seconds to wait between successful requests
+retryTimeoutLength = 10  # Seconds to wait after an error before retrying
 
 fake = Faker()
 URL = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns?sf_cntrl_id=ctl00$MainContent$C001"
 count = 0
+
 while True:
     count += 1
     missouri = address.Address.generate_MO_address()
@@ -30,15 +32,39 @@ while True:
                "Cookie": ""}
     try:
         response = requests.post(URL, data=data_json, headers=headers)
+    except ConnectionError:
+        print("A connection error occurred. ")
+        print("This could be a normal network error or the connection could have been blocked by the host.")
+        print("Trying again in 10 seconds...")
+        time.sleep(retryTimeoutLength)
+    except requests.HTTPError:
+        print("An HTTP error occurred.")
+        print("This means the program received an invalid HTTP response from the server.")
+        print("Trying again in 10 seconds...")
+        time.sleep(retryTimeoutLength)
+    except TimeoutError:
+        print("A timeout error occurred.")
+        print("This means the server waited too long to send a response.")
+        print("Trying again in 10 seconds...")
+        time.sleep(retryTimeoutLength)
+    except requests.exceptions.RequestException:
+        print("A request error occurred.")
+        print("This means there was an ambiguous exception that occurred while handling the request.")
+        print("Trying again in 10 seconds...")
+        time.sleep(retryTimeoutLength)
+    except:
+        print("An unknown error occurred.")
+        print("Trying again in 10 seconds...")
+        time.sleep(retryTimeoutLength)
+    else:  # if there were no errors
         if not response.ok:
-            print(f"Endpoint failed {response.status_code} (Trying again in 10 seconds)...")
-            sys.exit(1)
+            print(f"Endpoint failed {response.status_code}.")
+            print("Trying again in 10 seconds...")
+            time.sleep(retryTimeoutLength)
         elif "already submitted" in response.text:
-            print("Form already submitted, workaround required? (Trying again in 10 seconds)...")
-            time.sleep(10)
+            print("Got 'Form already submitted' message. New workaround required?")
+            print("Trying again in 10 seconds...")
+            time.sleep(retryTimeoutLength)
         else:
             print(f"Response {count} submitted for {data['TextFieldController_5']}, {data['TextFieldController_4']}")
-            time.sleep(1)
-    except:
-        print("An error occurred. Trying again in 10 seconds...")
-        time.sleep(10)
+            time.sleep(RequestTimeoutLength)

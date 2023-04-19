@@ -4,16 +4,21 @@ import sys
 import time
 from faker import Faker
 
+import address
+
+
 fake = Faker()
-url = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns?sf_cntrl_id=ctl00$MainContent$C001"
+URL = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns?sf_cntrl_id=ctl00$MainContent$C001"
 
 while True:
+    missouri = address.Address.generate_MO_address()
+
     data = {"TextFieldController_4": fake.first_name(),
             "TextFieldController_5": fake.last_name(),
-            "TextFieldController_1": fake.street_address(),
-            "TextFieldController_2": fake.city(),
-            "DropdownListFieldController": fake.state_abbr(),
-            "TextFieldController_6": fake.postcode(),
+            "TextFieldController_1": missouri.street_address,
+            "TextFieldController_2": missouri.city,
+            "DropdownListFieldController": "MO",
+            "TextFieldController_6": missouri.postcode,
             "TextFieldController_0": fake.free_email(),
             "TextFieldController_3": fake.phone_number(),
             "ParagraphTextFieldController": fake.paragraph(10)}
@@ -24,15 +29,14 @@ while True:
                "X-Forwarded-For": fake.ipv4(),
                "Cookie": ""}
 
-    response = requests.post(url, data=data_json, headers=headers)
+    response = requests.post(URL, data=data_json, headers=headers)
     if not response.ok:
-        print("Endpoint failed {0}".format(response.status_code))
+        print(f"Endpoint failed {response.status_code}")
         sys.exit(1)
     elif "already submitted" in response.text:
         print("Form already submitted, workaround required")
         sys.exit(1)
 
-    print("Response submitted for {0}, {1}".format( data["TextFieldController_5"],
-                                                    data["TextFieldController_4"] ))
+    print(f"Response submitted for {data['TextFieldController_5']}, {data['TextFieldController_4']}")
 
     time.sleep(1)

@@ -4,7 +4,7 @@ import time
 from faker import Faker
 import address
 
-RequestTimeoutLength = 1  # Seconds to wait between successful requests
+requestTimeoutLength = 1  # Seconds to wait between successful requests
 retryTimeoutLength = 10  # Seconds to wait after an error before retrying
 
 fake = Faker()
@@ -67,4 +67,4 @@ while True:
             time.sleep(retryTimeoutLength)
         else:
             print(f"Response {count} submitted for {data['TextFieldController_5']}, {data['TextFieldController_4']}")
-            time.sleep(RequestTimeoutLength)
+            time.sleep(requestTimeoutLength)

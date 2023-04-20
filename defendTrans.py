@@ -8,12 +8,14 @@ import address
 import phone
 
 
-fake = Faker()
+DEBUG = False
 URL = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns?sf_cntrl_id=ctl00$MainContent$C001"
 
+fake = Faker()
+
 while True:
-    addy = address.Address.missouri()
-    phone_str = phone.Phone.missouri(addy).randomize_format()
+    addy = address.Address.generate_address()
+    phone_str = phone.Phone.generate_phone(addy).randomize_format()
 
     data = {"TextFieldController_4": fake.first_name(),
             "TextFieldController_5": fake.last_name(),
@@ -25,7 +27,7 @@ while True:
             "TextFieldController_3": phone_str,
             "ParagraphTextFieldController": fake.paragraph(10)}
 
-    print(f"attempting to submit {list(data.values())[:-1]}...")
+    if DEBUG: print(f"Attempting to submit {list(data.values())[:-1]}...")
 
     data_json = json.dumps(data)
     headers = {"Content-Type": "application/json",

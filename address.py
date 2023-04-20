@@ -27,7 +27,7 @@ class Address:
     # pick a random byte offset, seek to it, increment until newline, read until next newline
     # avoid picking EOF by bounding randint to the second-to-last newline; see above
     @classmethod
-    def factory(cls):
+    def generate_address(cls):
         """generates a random address in missouri. dataset from kaggle
 
         Returns:

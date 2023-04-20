@@ -19,7 +19,7 @@ class Phone:
         self.line_no = line_no
 
     @classmethod
-    def factory(cls, addy: address.Address):
+    def generate_phone(cls, addy: address.Address):
         return cls(
             '1',
             Phone.city_to_area(addy.city),

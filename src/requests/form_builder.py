@@ -85,7 +85,7 @@ class UndocWorkerForm(Form):
                           "TextFieldController_14": self.faker.free_email(),
                           "TextFieldController_21": phone_number,
                           "MultipleChoiceFieldController": "I am a state resident.",
-                          "TextFieldController_18": "Andrew Bailey's Asshole", # TODO: generate random business name
+                          "TextFieldController_18": self.faker.company(),
                           "TextFieldController_15": business_addy.street_address,
                           "TextFieldController_13": business_addy.city,
                           "TextFieldController_7": business_addy.postcode,

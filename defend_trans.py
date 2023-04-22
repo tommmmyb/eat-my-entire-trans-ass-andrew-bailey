@@ -3,16 +3,20 @@ import time
 import requests
 from faker import Faker
 
-from src.requests.form_builder import Form
+from src.requests.form_builder import TransForm, UndocWorkerForm
 
 requestTimeoutLength = 1  # Seconds to wait between successful requests
 retryTimeoutLength = 10  # Seconds to wait after an error before retrying
 
-URL = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns?sf_cntrl_id=ctl00$MainContent$C001"
+# URL = "https://ago.mo.gov/file-a-complaint/transgender-center-concerns"
+# PARAMS = {'sf_cntrl_id': 'ctl00$MainContent$C001'}
+
+URL = "https://ago.mo.gov/criminal-division/public-safety/unauthorized-alien-workers/report-unauthorized-alien-workers"
+PARAMS = {'sf_cntrl_id': 'ctl00%24MainContent%24C003'}
 count = 0
 
 fake = Faker()
-form = Form()
+form = UndocWorkerForm(URL, PARAMS)
 
 while True:
     count += 1
